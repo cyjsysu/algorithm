@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        window.onload = function () {
+
+        };
+
+        function ListNode(val) {
+            this.val = val;
+            this.next = null;
+        }
+
+        var hasCycle = function (head) {
+            let ws = new WeakSet();
+            let curNode = head;
+            while (curNode) {
+                if (ws.has(curNode)) {
+                    return true;
+                }
+                ws.add(curNode);
+                curNode = curNode.next;
+            }
+            return false;
+        };
+        var detectCycle = function (head) {
+            let ws = new WeakSet();
+            let curNode = head;
+            while (curNode) {
+                if (ws.has(curNode)) {
+                    return curNode;
+                }
+                ws.add(curNode);
+                curNode = curNode.next;
+            }
+            return null;
+        };
+
+        //143. 重排链表
+        var reorderList1 = function (head) {
+            let curNode = head;
+            let s1 = [], s2 = [];
+            while (curNode) {
+                s1.push(curNode);
+                curNode = curNode.next;
+            }
+            let len = s1.length;
+            let halfLen = parseInt(len / 2);
+            for (let i = 0; i < halfLen; i++) {
+                s2.push(s1.pop());
+            }
+            let tmpNode = new ListNode(0);
+            curNode = tmpNode;
+            while (s1.length) {
+                curNode.next = s1.shift();
+                curNode = curNode.next;
+                if (s2.length) {
+                    curNode.next = s2.shift();
+                    curNode = curNode.next;
+                }
+                curNode.next = null;
+            }
+            head = tmpNode.next;
+        };
+        var reorderList = function (head) {
+            if (!head || !head.next)
+                return head;
+            let pre = head, lat = head.next;
+            // pre指向前半段末尾，lat指向后半段末尾(可能是最后一个节点或者null)
+            while (lat && lat.next) {
+                pre = pre.next;
+                lat = lat.next.next;
+            }
+
+            let cur = null;
+            let p = pre.next;
+            pre.next = null;
+            while (p) {
+                let q = p.next;
+                p.next = cur;
+                cur = p;
+                p = q;
+            }
+
+            pre = head;
+            while (pre && cur) {
+                let tmp = cur.next;
+                cur.next = pre.next;
+                pre.next = cur;
+                pre = pre.next.next;
+                cur = tmp;
+            }
+        };
+
+        //144. 二叉树的前序遍历
+        var preorderTraversal = function (root) {
+            if (!root)
+                return [];
+
+            let stack = [];
+            let res = [];
+            let curNode = root;
+            // stack.push(root);
+            while (curNode) {
+                // if (!curNode) {
+                //     curNode = stack.pop();
+                //
+                // } else {
+                res.push(curNode.val);
+                if (curNode.left && curNode.right) {
+                    stack.push(curNode.right);
+                    curNode = curNode.left;
+                } else if (curNode.left) {
+                    curNode = curNode.left;
+                } else if (curNode.right) {
+                    curNode = curNode.right;
+                } else {
+                    if(stack)
+                        curNode = stack.pop();
+                    else
+                        curNode =null;
+                }
+                // }
+
+            }
+            return res;
+        };
+
+        //145. 二叉树的后序遍历
+        var postorderTraversal = function(root) {
+            if(!root)
+                return [];
+
+            let res = [];
+            let stack = [];
+
+            let curNode = root;
+            let state = null;
+            while(curNode){
+                if(!curNode.left && !curNode.right){
+                    res.push(curNode.val);
+                    curNode = null;
+                    while(stack.length && !curNode){
+                        [curNode, state] = stack.pop();
+                        if(!state){
+                            res.push(curNode.val);
+                            curNode = null;
+                        }
+                    }
+
+                }else{
+                    stack.push([curNode, false]);
+                    if(curNode.left && curNode.right){
+                        stack.push([curNode.right, true]);
+                        curNode = curNode.left;
+                    }else if(curNode.left){
+                        curNode = curNode.left;
+                    }else {
+                        curNode = curNode.right;
+                    }
+                }
+
+            }
+            return res;
+        };
+    </script>
+</head>
+<body>
+
+</body>
+</html>

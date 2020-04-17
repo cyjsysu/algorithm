@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<script>
+    function bubble(nums) {
+        for (let i = 0; i < nums.length; i++) {
+            for (let j = 0; j < nums.length - 1; j++) {
+                if (nums[j] > nums[j + 1]) {
+                    let mid = nums[j];
+                    nums[j] = nums[j + 1];
+                    nums[j + 1] = mid;
+                }
+            }
+        }
+        return nums;
+    }
+
+    function selectionSort(nums) {
+        for (let i = 0; i < nums.length - 1; i++) {
+            let temp = i;
+            for (let j = i + 1; j < nums.length; j++) {
+                if (nums[j] < nums[temp]) {
+                    temp = j;
+                }
+            }
+            if (temp !== i) {
+                let mid = nums[i];
+                nums[i] = nums[temp];
+                nums[temp] = mid;
+            }
+        }
+        return nums;
+    }
+
+    function insertSort(nums) {
+        for (let i = 1; i < nums.length; i++) {
+            if (nums[i] < nums[i - 1]) {
+                let mid = nums[i];
+                for (let j = i; j >= 0; j--) {
+                    if (j > 0 && nums[j - 1] > mid) {
+                        nums[j] = nums[j - 1];
+                    } else {
+                        nums[j] = mid;
+                        break;
+                    }
+                }
+            }
+        }
+        return nums;
+    }
+
+    function merge(nums, left, right) {
+        if (left < 0 || right >= nums.length || right <= left) {
+            return;
+        }
+        if (right === left + 1) {
+            if (nums[left] > nums[right]) {
+                let temp = nums[left];
+                nums[left] = nums[right];
+                nums[right] = temp;
+            }
+            return;
+        }
+        let mid = Math.floor((left + right) / 2);
+        //console.log(left, mid, right);
+        merge(nums, left, mid - 1);
+        merge(nums, mid, right);
+        let arr = [];
+        let i = left, j = mid;
+        while (arr.length <= right - left) {
+            if (i < mid && j <= right) {
+                if (nums[i] < nums[j]) {
+                    arr.push(nums[i++]);
+                } else {
+                    arr.push(nums[j++]);
+                }
+            } else if (i < mid) {
+                arr.push(nums[i++]);
+            } else {
+                arr.push(nums[j++]);
+            }
+        }
+        for (let i = 0; i < arr.length; i++) {
+            nums[left + i] = arr[i];
+        }
+    }
+
+    function quickSort(nums, left, right) {
+        if (left < 0 || right >= nums.length || right <= left) {
+            return;
+        }
+
+        let i = left, j = right, temp = nums[left];
+        while (i < j) {
+            while (i < j && nums[j] >= temp) {
+                j--;
+            }
+            nums[i] = nums[j];
+            while (i < j && nums[i] <= temp) {
+                i++;
+            }
+            nums[j] = nums[i];
+        }
+        nums[i] = temp;
+        //console.log(left, i, right, nums);
+        quickSort(nums, left, i - 1);
+        quickSort(nums, i + 1, right);
+    }
+
+    // 堆排序
+    function heapSort(nums) {
+        buildMaxHeap(nums);
+
+        let len = nums.length;
+        for (let i = len - 1; i >= 1; --i) {
+            [nums[i], nums[0]] = [nums[0], nums[i]];
+            let parent = 0, left = 1, right = 2;
+            while((left < i && nums[left] > nums[parent]) || (right < i && nums[right] > nums[parent])){
+                if(right >= i){
+                    [nums[left], nums[parent]] = [nums[parent], nums[left]];
+                    break;
+                }else if(nums[left]>nums[right]){
+                    [nums[left], nums[parent]] = [nums[parent], nums[left]];
+                    parent = left;
+                }else{
+                    [nums[right], nums[parent]] = [nums[parent], nums[right]];
+                    parent = right;
+                }
+                left = parent * 2 + 1;
+                right = parent * 2 + 2;
+
+            }
+
+        }
+    }
+
+    function buildMaxHeap(nums) {
+        for (let i = 0; i < nums.length; ++i) {
+            let child = i;
+            let parent = Math.floor((child - 1) / 2);
+            while (parent >= 0 && nums[parent] < nums[child]) {
+                [nums[parent], nums[child]] = [nums[child], nums[parent]];
+                child = parent;
+                parent = Math.floor((child - 1) / 2);
+            }
+        }
+    }
+
+
+
+    let nums = [9, 2, 5, 1, 3, 8, 5, 7, 4, 3];
+
+    //console.log(bubble(nums));
+    //console.log(selectionSort(nums));
+    //console.log(insertSort(nums););
+
+    // merge(nums, 0, nums.length - 1);
+    // console.log(nums);
+
+    // quickSort(nums, 0, nums.length - 1);
+    // console.log(nums);
+
+    heapSort(nums);
+    console.log(nums);
+</script>
+</body>
+</html>

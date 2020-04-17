@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        window.onload = function () {
+            var  s = "catsandog", wordDict = ["cats", "dog", "sand", "and", "cat"];
+            var res = wordBreak(s, wordDict);
+            console.log(res);
+        };
+        var singleNumber1 = function (nums) {
+            var res = 0;
+            for (var i = 0; i < nums.length; i++) {
+                res = res ^ nums[i];
+            }
+            return res;
+        };
+
+        //137. 只出现一次的数字 II
+        var singleNumber = function (nums) {
+            var once = 0, twice = 0;
+            for (var i = 0; i < nums.length; i++) {
+                once = ~twice & (once ^ nums[i]);
+                twice = ~once & (twice ^ nums[i]);
+            }
+            return once;
+        };
+
+        //138. 复制带随机指针的链表
+        var copyRandomList = function (head) {
+            if (!head)
+                return null;
+
+            var record = new Map();
+            copyList(head, record);
+            return record.get(head);
+        };
+
+        function copyList(node, record) {
+            if (!node)
+                return null;
+            if (record.has(node))
+                return record.get(node);
+
+            var curNode = new Node(node.val, null, null);
+            record.set(node, curNode);
+            curNode.next = copyList(node.next, record);
+            curNode.random = copyList(node.random, record);
+
+            return curNode;
+
+        }
+
+        //139. 单词拆分
+        var wordBreak1 = function (s, wordDict) {
+            var record = new Array(s.length + 1).fill(false);
+            record[0] = true;
+            //console.log(record, s.length);
+            for (var i = 0; i < s.length; i++) {
+
+                if (!record[i])
+                    continue;
+                //console.log('=++++++++=');
+                //console.log(i, s[i]);
+                for (var word of wordDict) {
+                    //console.log('#', word, i + word.length <= s.length, word === s.slice(i, i + word.length));
+                    if (i + word.length <= s.length && word === s.slice(i, i + word.length)) {
+                        // console.log('#', i + word.length);
+                        record[i + word.length] = true;
+                    }
+                }
+                //console.log(record);
+            }
+            return record[s.length]
+        };
+
+        var wordBreak = function (s, wordDict) {
+            var record = new Array(s.length + 1).fill(false);
+            record[0] = true;
+            //console.log(record, s.length);
+            for (var i = 0; i < s.length; i++) {
+                if (!record[i])
+                    continue;
+                //console.log('=++++++++=');
+                //console.log(i, s[i]);
+                for (var word of wordDict) {
+                    //console.log('#', word, i + word.length <= s.length, word === s.slice(i, i + word.length));
+                    if (i + word.length <= s.length && word === s.slice(i, i + word.length)) {
+                        // console.log('#', i + word.length);
+                        record[i + word.length] = true;
+                    }
+                }
+                //console.log(record);
+            }
+            return record[s.length]
+        };
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

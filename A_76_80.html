@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        window.onload = function () {
+            var nums = [1,1,1,2,2,3];
+            var result = removeDuplicates(nums);
+            console.log(result);
+        };
+        var minWindow = function (s, t) {
+            var need = [];
+            var window = new Array();
+            var left = -1, right = -1;
+            var start = 0, end = 0, minLen = -1;
+            for (var i = 0; i < t.length; i++) {
+                if (need.indexOf(t[i]) == -1) {
+                    need.push(t[i]);
+                    window[t[i]] = 0;
+                }
+            }
+
+            console.log(need);
+            console.log(window);
+
+            var noResult = false;
+            while (!noResult) {
+                console.log('PP');
+
+                //right右移
+                while (true) {
+                    right++;
+                    if (need.indexOf(s[right]) != -1) {
+                        window[s[right]]++;
+                    }
+                    //判断是否已包含所有字母
+                    var hasAll = true;
+                    for (var k in window) {
+                        //console.log(k);
+                        //console.log([k, window[k]]);
+                        hasAll = hasAll && window[k];
+                    }
+                    //如果有所有字母则停止右移
+                    if (hasAll) {
+                        break;
+                    }
+
+                    //移到尽头，不能再包含所有字母，结束匹配
+                    if (right == s.length - 1) {
+                        noResult = true;
+                        break;
+                    }
+                }
+
+                if (noResult)
+                    break;
+
+                //left右移
+                while (true) {
+                    left++;
+                    if (need.indexOf(s[left]) != -1) {
+                        window[s[left]]--;
+                    }
+
+
+                }
+            }
+        };
+
+        var combine = function (n, k) {
+            var result = [];
+            var current = [];
+            backtrack(n, k, 1, result, current);
+
+            //console.log(result);
+            return result;
+        };
+
+        function backtrack(n, k, num, res, current) {
+            //console.log(["$", current.concat()]);
+            if (current.length == k) {
+                res.push(current.concat());
+                //console.log(res);
+            } else {
+                for (var i = num; i <= n; i++) {
+                    //console.log(typeof(current));
+                    current.push(i);
+                    //console.log(["#", i, current]);
+                    backtrack(n, k, i + 1, res, current);
+                    current.pop();
+                }
+            }
+            //console.log(["#", res]);
+        }
+
+        var subsets = function (nums) {
+            var result = [];
+            var tag = Math.pow(2, nums.length);
+            for (var i = 0; i < tag; i++) {
+                var n = i;
+                var part = [];
+                for (var j = 0; j < nums.length; j++) {
+                    if (n % 2 == 1) {
+                        part.push(nums[j]);
+                    }
+                    n >>= 1;
+                }
+                result.push(part.concat());
+            }
+            //console.log(result);
+            return result;
+        };
+
+        var exist = function (board, word) {
+            var row = board.length, col = board[0].length;
+            var used = new Array();
+            for (var i = 0; i < row; i++) {
+                used[i] = new Array();
+                for (var j = 0; j < col; j++) {
+                    used[i][j] = false;
+                }
+            }
+            for (var i = 0; i < row; i++) {
+                for (var j = 0; j < col; j++) {
+                    if (find(board, word, i, j, 0, used))
+                        return true;
+                }
+            }
+            return false;
+        };
+
+        function find(board, word, x, y, r, used) {
+            if (x < 0 || y < 0 || x >= board.length || y >= board[0].length || r >= word.length || used[x][y])
+                return false;
+            if (word[r] != board[x][y])
+                return false;
+
+            if (r == word.length - 1)
+                return true;
+
+            used[x][y] = true;
+
+            if (find(board, word, x + 1, y, r + 1, used)) {
+                return true;
+            } else if (find(board, word, x - 1, y, r + 1, used)) {
+                return true;
+            } else if (find(board, word, x, y + 1, r + 1, used)) {
+                return true;
+            } else if (find(board, word, x, y - 1, r + 1, used)) {
+                return true;
+            }
+            used[x][y] = false;
+            return false;
+        }
+
+        var removeDuplicates = function (nums) {
+            var start = 0, end = 0;
+            while (end < nums.length) {
+                if (nums[start] != nums[end]) {
+                    start = end;
+                    end++;
+                } else if (end > start + 1) {
+                    nums.splice(end, 1);
+                } else {
+                    end++;
+                }
+            }
+            //console.log(nums);
+        };
+    </script>
+</head>
+<body>
+
+</body>
+</html>

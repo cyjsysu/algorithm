@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        var rotate = function (nums, k) {
+            k = k % nums.length;
+            reverse(nums, 0, nums.length-1);
+            reverse(nums, 0,k-1);
+            reverse(nums,k,nums.length-1);
+        };
+        function reverse(nums, start, end){
+
+            while(start<end){
+                let mid = nums[start];
+                nums[start] = nums[end];
+                nums[end] = mid;
+                start++;
+                end--;
+            }
+        }
+
+        //190. 颠倒二进制位
+        var reverseBits = function(n) {
+
+        };
+    </script>
+</head>
+<body>
+
+</body>
+</html>

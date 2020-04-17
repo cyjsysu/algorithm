@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        window.onload = function () {
+            var s = [1, 2, 3, 4, 5, null, 7, 8, 9];
+
+            var res = generateTrees(3);
+            console.log(res);
+            //printList(res);
+            for (var i = 0; i < res.length; i++) {
+                console.log("***");
+                console.log(inorderTraversal(res[i]));
+            }
+        };
+        var numDecodings = function (s) {
+            var singleN = new Array(s.length).fill(0);
+            var doubleN = new Array(s.length).fill(0);
+            singleN[0] = s[0] == "0" ? 0 : 1;
+            doubleN[0] = 0;
+            for (var i = 1; i < s.length; i++) {
+
+                var n = parseInt(s[i - 1]) * 10 + parseInt(s[i]);
+
+                if (s[i] == "0") {
+                    singleN[i] = 0;
+                    if (n && n < 27) {
+                        doubleN[i] = singleN[i - 1];
+                    } else {
+                        doubleN[i] = 0;
+                    }
+                } else {
+                    singleN[i] = singleN[i - 1] + doubleN[i - 1];
+                    if (n && n < 27) {
+                        doubleN[i] = singleN[i - 1];
+                    } else {
+                        doubleN[i] = 0;
+                    }
+                }
+            }
+            return singleN[s.length - 1] + doubleN[s.length - 1];
+        };
+
+        function createLink(nums) {
+            var head = null, tail = null;
+            for (var n in nums) {
+                var node = new ListNode(nums[n]);
+                if (!head) {
+                    head = node;
+
+                } else {
+                    tail.next = node;
+                }
+                tail = node;
+            }
+            return head;
+        }
+
+        function ListNode(val) {
+            this.val = val;
+            this.next = null;
+        }
+
+        function printList(head) {
+            var node = head;
+            var arr = [];
+            while (node != null) {
+                arr.push(node.val);
+                node = node.next;
+            }
+            console.log(arr);
+        }
+
+        var reverseBetween = function (head, m, n) {
+            var tempNode = new ListNode(0);
+            tempNode.next = head;
+            var front = tempNode;
+            m--;
+            while (m--) {
+                front = front.next;
+            }
+            var tail = head;
+            n--;
+            while (n--) {
+                tail = tail.next;
+            }
+            var rear = tail.next;
+            tail.next = null;
+
+            var res = reverseLink(front.next);
+            front.next = res[0];
+            res[1].next = rear;
+            return tempNode.next;
+        };
+
+        function reverseLink(head) {
+            //printList(head);
+
+            var curHead = head;
+            //var curTail = head;
+            var nextNode = head.next;
+            //printList(nextNode);
+            head.next = null;
+            while (nextNode) {
+
+                var tempNode = nextNode;
+                nextNode = nextNode.next;
+                tempNode.next = curHead;
+                //curTail.next = nextNode;
+                curHead = tempNode;
+
+                ///printList(curHead);
+
+            }
+            return [curHead, head];
+        }
+
+        var restoreIpAddresses = function (s) {
+            var res = [];
+            if (s.length < 4 && s.length > 16)
+                return res;
+            getIp(s, 1, 0, "", res);
+            //console.log(res);
+            return res;
+        };
+
+        function getIp(s, i, j, curPart, res) {
+            // i: Ip第几段
+            // j: s未用的第一个字符index
+            // curPart: 现组成IP
+            // if (i === 5) {
+            //     res.push(curPart);
+            //     return;
+            // }
+            // console.log(i, j, curPart, res);
+            for (var k = 1; k <= 3; k++) {
+                var num = parseInt(s.slice(j, j + k));
+                if (num >= 0 && num <= 255 && String(num) === s.slice(j, j + k)) {
+                    var newIP = curPart + s.slice(j, j + k) + (i === 4 ? "" : ".");
+                    if (i === 4) {
+                        //console.log("+++++++++++", newIP, i, j+k, s.length);
+                        if (j + k === s.length) {
+                            //console.log("============");
+                            res.push(newIP);
+                        } else {
+                            continue;
+                        }
+
+                    } else {
+                        getIp(s, i + 1, j + k, newIP, res);
+
+                    }
+                }
+            }
+        }
+
+        function TreeNode(val) {
+            this.val = val;
+            this.left = this.right = null;
+        }
+
+        var inorderTraversal = function (root) {
+            var res = [];
+            if (!root)
+                return res;
+            var midStack = [];
+            var curNode = root;
+            while (true) {
+                if (curNode.left) {
+                    midStack.push(curNode);
+                    curNode = curNode.left;
+                } else {
+                    res.push(curNode.val);
+                    if (curNode.right) {
+                        curNode = curNode.right;
+                    } else {
+                        if (midStack.length === 0)
+                            break;
+                        else {
+                            curNode = midStack.pop();
+                            res.push(curNode.val);
+                            while (!curNode.right && midStack.length) {
+                                curNode = midStack.pop();
+                                res.push(curNode.val);
+                            }
+                            if (!curNode.right)
+                                break;
+                            curNode = curNode.right;
+                        }
+                    }
+                }
+
+            }
+            return res;
+        };
+
+        var generateTrees = function (n) {
+            if (!n)
+                return [];
+            return createTree(1, n);
+        };
+
+        function createTree(minNum, maxNum) {
+            var res = [];
+
+            if (maxNum === minNum) {
+                var root = new TreeNode(minNum);
+                res.push(root);
+            } else if (minNum > maxNum) {
+                res.push(null);
+            } else {
+                for (var i = minNum; i <= maxNum; i++) {
+                    var leftTree = createTree(minNum, i - 1);
+                    var rightTree = createTree(i + 1, maxNum);
+                    for (var j = 0; j < leftTree.length; j++) {
+                        for (var k = 0; k < rightTree.length; k++) {
+                            var newRoot = new TreeNode(i);
+                            newRoot.left = leftTree[j];
+                            newRoot.right = rightTree[k];
+                            res.push(newRoot);
+                        }
+                    }
+                }
+            }
+            return res;
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

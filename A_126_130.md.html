@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        window.onload = function () {
+            var board = [["X","O"],["O","X"]];
+            solve(board);
+            console.log(board);
+        };
+
+        //127. 单词接龙
+        var ladderLength = function (beginWord, endWord, wordList) {
+            var wordDict = [];
+            for (var i in wordList) {
+                for (var k = 0; k < wordList[i].length; k++) {
+                    var tmp = wordList[i].slice(0, k) + '_' + wordList[i].slice(k + 1);
+                    //console.log(wordList[i], tmp);
+                    if (!wordDict[tmp]) {
+                        wordDict[tmp] = [wordList[i]];
+                    } else {
+                        wordDict[tmp].push(wordList[i]);
+                    }
+                }
+            }
+            //console.log(wordDict);
+
+            var word, len;
+            var queue = [beginWord], visited = [], lens = [1];
+            //var len = 0;
+            while (queue.length) {
+                word = queue.shift();
+                len = lens.shift();
+                if (visited.indexOf(word) === -1) {
+                    visited.push(word);
+                    if (word === endWord)
+                        return len;
+                    len++;
+                    for (k = 0; k < word.length; k++) {
+                        tmp = word.slice(0, k) + '_' + word.slice(k + 1);
+                        for (var j in wordDict[tmp]) {
+                            if (visited.indexOf(wordDict[tmp][j]) === -1) {
+                                queue.push(wordDict[tmp][j]);
+                                lens.push(len);
+                            }
+                        }
+                    }
+                }
+                //console.log(queue, lens);
+            }
+            //console.log('wrong');
+            return 0;
+        };
+
+        //129. 求根到叶子节点数字之和
+        var sumNumbers = function (root) {
+            if (!root)
+                return 0;
+            var sum = [0];
+            countSum(root, sum, 0);
+            return sum[0];
+        };
+
+        function countSum(node, sum, curSum) {
+            curSum = curSum * 10 + node.val;
+            if (!node.left && !node.right) {
+                sum[0] += curSum;
+            }
+            if (node.left) {
+                countSum(node.left, sum, curSum);
+            }
+            if (node.right) {
+                countSum(node.right, sum, curSum);
+            }
+
+        }
+
+        //130. 被围绕的区域
+        var solve = function (board) {
+            if(!board.length || !board[0].length)
+                return;
+
+            for (var i = 0; i < board.length; i++) {
+                dfs(board, i, 0);
+                dfs(board, i, board[0].length - 1);
+            }
+            for (var j = 1; j < board[0].length - 1; j++) {
+                dfs(board, 0, j);
+                dfs(board, board.length - 1, j);
+            }
+            //console.log(board);
+            for (i = 0; i < board.length; i++) {
+                for (j = 0; j < board[0].length; j++) {
+                    if (board[i][j] === 'O')
+                        board[i][j] = 'X';
+                    else if (board[i][j] === '#')
+                        board[i][j] = 'O';
+                }
+            }
+        };
+
+        function dfs(board, i, j) {
+            //console.log(i,j);
+            if (i < 0 || i >= board.length || j < 0 || j >= board[0].length ||
+                board[i][j] !== "O")
+                return;
+
+            board[i][j] = "#";
+            //if (i + 1 < board.length)
+            dfs(board, i + 1, j);
+            //if (i >= 1)
+            dfs(board, i - 1, j);
+            //if (j + 1 < board[0].length)
+            dfs(board, i, j + 1);
+            //if (j >= 1)
+            dfs(board, i, j - 1);
+
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

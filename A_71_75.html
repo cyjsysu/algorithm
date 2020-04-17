@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>test</title>
+    <script>
+        window.onload = function () {
+            var path = "/home//foo/";
+            var word1 = "horse", word2 = "ros";
+            var mat = [
+                [1, 3, 5, 7],
+                [10, 11, 16, 20],
+                [23, 30, 34, 50]
+            ];
+            var nums = [2, 0, 2, 1, 1, 0];
+
+            var result = sortColors(nums);
+            alert(result);
+
+            //test();
+        };
+        var simplifyPath = function (path) {
+            var res = "";
+            var resPath = [];
+            path = path.split("/");
+            for (var i in path) {
+                if (path[i] == "" || path[i] == ".") {
+                    continue;
+                } else if (path[i] == "..") {
+                    resPath.pop();
+                } else {
+                    resPath.push(path[i]);
+                }
+            }
+            for (var i in resPath) {
+                res += ("/" + resPath[i]);
+            }
+            if (res == "")
+                res = "/";
+            alert(res);
+            return res;
+        };
+
+        var minDistance = function (word1, word2) {
+            var len1 = word1.length, len2 = word2.length;
+            var arr = new Array();
+            for (var i = 0; i <= len1; i++) {
+                arr[i] = new Array();
+                for (var j = 0; j <= len2; j++) {
+                    if (j == 0)
+                        arr[i][j] = i;
+                    else if (i == 0)
+                        arr[i][j] = j;
+                    else {
+                        var a = arr[i - 1][j] + 1;
+                        var b = arr[i][j - 1] + 1;
+                        var c = arr[i - 1][j - 1];
+                        if (word1[i - 1] != word2[j - 1]) {
+                            c++;
+                            //alert([word1[i], word2[j]]);
+                        }
+
+                        var min = a <= b ? a : b;
+                        arr[i][j] = min <= c ? min : c;
+                    }
+                }
+            }
+
+            return arr[len1][len2];
+
+        };
+
+        var setZeroes = function (matrix) {
+            //console.log(matrix);
+            var row = matrix.length, col = matrix[0].length;
+            var row_0_has_zero = false, col_0_has_zero = false;
+
+            //第一行
+            for (var j = 0; j < col; j++) {
+                if (matrix[0][j] == 0) {
+                    row_0_has_zero = true;
+                    break;
+                }
+            }
+            //第一列
+            for (var i = 0; i < row; i++) {
+                if (matrix[i][0] == 0) {
+                    col_0_has_zero = true;
+                    break;
+                }
+            }
+            //console.log(matrix);
+
+            //遍历其它元素
+            for (var i = 0; i < row; i++) {
+                for (var j = 0; j < col; j++) {
+                    if (matrix[i][j] == 0) {
+                        matrix[i][0] = 0;
+                        matrix[0][j] = 0;
+                    }
+                }
+            }
+
+            //在第一列找0
+            for (var i = 1; i < row; i++) {
+                if (matrix[i][0] == 0) {
+                    for (var j = 1; j < col; j++) {
+                        matrix[i][j] = 0;
+                    }
+                }
+            }
+
+            //第一行找0
+            for (let j = 1; j < col; j++) {
+                if (matrix[0][j] == 0) {
+                    for (let i = 1; i < row; i++) {
+                        matrix[i][j] = 0;
+                    }
+                }
+            }
+
+            // 第1行和第一列的数最后改
+            if (row_0_has_zero) {
+                for (var j = 0; j < matrix[0].length; j++) {
+                    matrix[0][j] = 0;
+                }
+            }
+            if (col_0_has_zero) {
+                for (var i = 0; i < matrix.length; i++) {
+                    matrix[i][0] = 0;
+                }
+            }
+
+            return matrix;
+        };
+
+        var searchMatrix = function (matrix, target) {
+            if (matrix.length == 0 || matrix[0].length == 0)
+                return false;
+            var row = matrix.length, col = matrix[0].length;
+            var i = row - 1, j = 0;
+            while (true) {
+                if (j == col || i == -1)
+                    return false;
+                if (matrix[i][j] == target)
+                    return true;
+                if (matrix[i][j] < target)
+                    j++;
+                else if (matrix[i][j] > target)
+                    i--;
+            }
+        };
+
+        var sortColors = function (nums) {
+            var i = -1, j = -1, k = -1;
+            for(var n of nums){
+                if (n == 0){
+                    nums[++k] = 2;
+                    nums[++j] = 1;
+                    nums[++i] = 0;
+                }else if(n == 1){
+                    nums[++k] = 2;
+                    nums[++j] = 1;
+                }else{
+                    nums[++k] = 2;
+                }
+            }
+            return nums;
+        };
+
+
+
+        function test() {
+            var num = 4;
+            num >>= 1;
+            console.log(num);
+            num >>= 1;
+            console.log(num);
+            num >>= 1;
+            console.log(num);
+            num >>= 1;
+            console.log(num);
+        }
+    </script>
+</head>
+
+<body>
+
+</body>
+</html>

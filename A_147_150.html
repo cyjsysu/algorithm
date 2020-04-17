@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        //147. 对链表进行插入排序
+        var insertionSortList = function (head) {
+            if (!head || !head.next)
+                return head;
+
+            let first = new ListNode(Number.MIN_SAFE_INTEGER);
+            first.next = head;
+            let finish = head, tar = head.next;
+            finish.next = null;
+            while (tar) {
+                console.log(tar.val);
+                if (tar.val < finish.val) {
+                    let tmp = tar;
+                    tar = tar.next;
+                    let mid = first;
+                    while (mid !== finish) {
+                        if (mid.val <= tmp.val && tmp.val <= mid.next.val) {
+                            tmp.next = mid.next;
+                            mid.next = tmp;
+                            break;
+                        }
+                        mid = mid.next;
+                    }
+                } else {
+                    finish.next = tar;
+                    tar = tar.next;
+
+                    finish = finish.next;
+                    finish.next = null;
+
+                }
+            }
+            tar = first.next;
+            while (tar) {
+                console.log('#', tar);
+                tar = tar.next;
+            }
+            return first.next;
+        };
+
+        // 148. 排序链表
+        var sortList = function (head) {
+            if (!head || !head.next)
+                return head;
+            if (!head.next.next) {
+                if (head.val <= head.next.val) {
+                    return head;
+                } else {
+                    head.next.next = head;
+                    head = head.next;
+                    head.next.next = null;
+                    return head;
+                }
+            }
+            let first = new ListNode(Number.MIN_SAFE_INTEGER), curNode = first;
+            // tmpNode.next = head;
+            let mid = head, tail = head.next;
+            while (tail && tail.next) {
+                mid = mid.next;
+                tail = tail.next.next;
+            }
+            tail = mid.next;
+            mid.next = null;
+            mid = sortList(head);
+            tail = sortList(tail);
+            while (mid || tail) {
+                if (mid && tail) {
+                    if (mid.val < tail.val) {
+                        curNode.next = mid;
+                        mid = mid.next;
+                        // curNode.next = null;
+                    } else {
+                        curNode.next = tail;
+                        tail = tail.next;
+                    }
+                } else if (mid) {
+                    curNode.next = mid;
+                    mid = mid.next;
+                } else if (tail) {
+                    curNode.next = tail;
+                    tail = tail.next;
+                }
+
+                curNode = curNode.next;
+            }
+            curNode.next = null;
+            curNode = first.next;
+            console.log('===============');
+            while (curNode) {
+                console.log(curNode.val);
+                curNode = curNode.next;
+            }
+            return first.next;
+        };
+
+        // 150. 逆波兰表达式求值
+        var evalRPN = function (tokens) {
+            if (tokens.length === 0)
+                return 0;
+            else if(tokens.length === 1){
+                return parseInt(tokens[0]);
+            }
+            let operations = ['+', '-', '*', '/'];
+
+            let op = tokens.pop();
+            let a, b;
+            if (operations.indexOf(tokens[tokens.length - 1]) === -1) {
+                b = parseInt(tokens.pop());
+            } else {
+                b = evalRPN(tokens)
+            }
+            if (operations.indexOf(tokens[tokens.length - 1]) === -1) {
+                a = parseInt(tokens.pop());
+            } else {
+                a = evalRPN(tokens)
+            }
+            // console.log(op, a, b);
+            let res = 0;
+            if (op === '+') {
+                // console.log(a+b);
+                res =  a + b;
+            } else if (op === '-') {
+                res = a - b;
+            } else if (op === '*') {
+                res = a * b;
+            } else if (op === '/') {
+                res = parseInt(a / b);
+            }
+            // console.log('#', res);
+            return res;
+        };
+        let tokens = ['8', '12', '+' ,'1' ,'56', '10', '*', '123', '3', '-', '+' ,'*', '8', '/' ,'+'];
+        console.log(tokens);
+        console.log(evalRPN(tokens));
+    </script>
+</head>
+<body>
+
+</body>
+</html>

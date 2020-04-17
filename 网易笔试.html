@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script>
+    // while(line=readline()){
+    //     var lines = line.split(" ");
+    //     var a = parseInt(lines[0]);
+    //     var b = parseInt(lines[1]);
+    //     print(a+b);
+    // }
+
+    // 本题为考试多行输入输出规范示例，无需提交，不计分。
+    // var n = parseInt(readline());
+    // var ans = 0;
+    // for(var i = 0;i < n; i++){
+    //     lines = readline().split(" ")
+    //     for(var j = 0;j < lines.length; j++){
+    //         ans += parseInt(lines[j]);
+    //     }
+    // }
+    // print(ans);
+
+    // function add( num1 ,  num2 ) {
+    //
+    //     let i = num1.indexOf('.'), j = num2.indexOf('.');
+    //     let len;
+    //     let pointLen = 0;
+    //     if(i === -1 && j === -1){
+    //         len = 0;
+    //     }else if(i >=0 && j >= 0){
+    //         if(num1.length - i > num2.length - j){
+    //             len = num1.length - i - 1;
+    //             num2 += '0'.repeat(len - (num2.length - j - 1));
+    //
+    //         }else{
+    //             len = num2.length - j - 1;
+    //             num1 += '0'.repeat(len - (num1.length- i -1));
+    //
+    //         }
+    //         num1 = num1.replace(/\./, '');
+    //         num2 = num2.replace(/\./, '');
+    //     }else if(i === -1){
+    //         len = num2.length - j - 1;
+    //         num1 += '0'.repeat(len);
+    //         num2 = num2.replace(/\./, '');
+    //     }else{
+    //         len = num1.length - i - 1;
+    //         num2 += '0'.repeat(len);
+    //         num1 = num1.replace(/\./, '');
+    //     }
+    //     // console.log('#', num1, num2);
+    //     let res = add9(num1, num2);
+    //     if(len){
+    //         let at = res.length - len;
+    //         res = res.slice(0, at) + '.' + res.slice(at);
+    //     }
+    //
+    //     return res;
+    // }
+    // function add9(n1, n2){
+    //     let res = '', len = Math.max(n1.length, n2.length), i = len-1, more = 0;
+    //
+    //     n1 = n1.padStart(len, '0');
+    //     n2 = n2.padStart(len, '0');
+    //     while(i>=0){
+    //         let sum = parseInt(n1[i]) + parseInt(n2[i]) + more;
+    //         res = sum % 9 + res;
+    //         more = Math.floor(sum / 9);
+    //         --i;
+    //     }
+    //     return res;
+    // }
+    // console.log(add("25","15"));
+
+    function readline() {
+    }
+
+    // let n = parseInt(readline());
+    // let skill = readline().split(' ');
+    // let task = readline().split(' ');
+    // let m = parseInt(readline());
+    //
+    // for(let i = 0 ; i<n;++i){
+    //     skill[i] = parseInt(skill[i]);
+    //     task[i] = parseInt(task[i]);
+    // }
+    // skill.sort((a,b)=>{
+    //     return b - a;
+    // });
+    // task.sort((a,b)=>{
+    //     return b - a;
+    // });
+
+    function count(skill, task, num, res, i) {
+        let len = skill.length;
+        if (i >= len) {
+            return;
+        }
+        for (let j = 0; j < len; ++j) {
+            if (task[j] === -1) {
+                continue;
+            }
+            if (skill[i] < task[j]) {
+                return;
+            }
+
+            if (num + 1 === len) {
+                res[0]++;
+                return;
+            } else {
+
+                let t = task[j];
+                task[j] = -1;
+
+                count(skill, task, num + 1, res, i + 1);
+
+                task[j] = t;
+
+            }
+        }
+    }
+
+    // let n = 2;
+    // let skill = [6, 6, 6];
+    // let task = [2, 2, 2];
+    // let m = 10;
+
+    // let n = 6;
+    // let skill = [6, 5, 4,3,2,1];
+    // let task = [6, 5, 4,3,2,1];
+    // let m = 10;
+
+    let n = parseInt(readline());
+    let skill = readline().split(' ');
+    let task = readline().split(' ');
+    let m = parseInt(readline());
+
+    for (let i = 0; i < n; ++i) {
+        skill[i] = parseInt(skill[i]);
+        task[i] = parseInt(task[i]);
+    }
+    skill.sort((a, b) => {
+        return b - a;
+    });
+    task.sort((a, b) => {
+        return b - a;
+    });
+
+
+    let res = [0];
+    count(skill, task, 0, res, 0,);
+    console.log(res[0] % m);
+</script>
+</body>
+</html>

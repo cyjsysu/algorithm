@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <SCRIPT>
+        //151. 翻转字符串里的单词
+        var reverseWords = function (s) {
+            let words = s.split(' ');
+            let res = [];
+            for (let i = words.length - 1; i >= 0; i--) {
+                if (words[i] === '') {
+                    words.splice(i, 1);
+                } else {
+                    res.push(words[i]);
+                }
+
+            }
+            // console.log(words);
+            // console.log(res.join(' '))
+            return res.join(' ');
+        };
+        let s = "  hello world!  ";
+        //console.log(reverseWords(s));
+
+        //152. 乘积最大子序列
+        var maxProduct = function (nums) {
+            if (nums.length === 1)
+                return nums[0];
+
+            let minRecord = new Array(nums.length).fill(0);
+            let maxRecord = new Array(nums.length).fill(0);
+            let res = nums[0];
+            //console.log(res);
+            minRecord[0] = maxRecord[0] = nums[0];
+            for (let i = 1; i < nums.length; i++) {
+                let midMax = maxRecord[i - 1] * nums[i];
+                let midMin = minRecord[i - 1] * nums[i];
+                minRecord[i] = Math.min(midMax, Math.min(nums[i], midMin));
+                maxRecord[i] = Math.max(midMin, Math.max(nums[i], midMax));
+                res = Math.max(res, maxRecord[i]);
+            }
+            return res;
+        };
+
+        //153. 寻找旋转排序数组中的最小值
+        var findMin1 = function (nums) {
+            if (nums.length === 1) {
+                return nums[0];
+            } else if (nums.length === 2) {
+                return nums[0] < nums[1] ? nums[0] : nums[1];
+            }
+            // let res = Number.MIN_SAFE_INTEGER;
+            for (let i = 0; i < nums.length; i++) {
+                if (i === 0) {
+                    if (nums[0] < nums[1] && nums[0] < nums[nums.length - 1]) {
+                        return nums[0];
+                    }
+                } else if (i === nums.length - 1) {
+                    return nums[i];
+                } else {
+                    if (nums[i] < nums[i - 1] && nums[i] < nums[i + 1]) {
+                        return nums[i];
+                    }
+                }
+            }
+        };
+
+        //154. 寻找旋转排序数组中的最小值 II
+        var findMin = function(nums) {
+
+            if (nums.length === 1) {
+                return nums[0];
+            } else if (nums.length === 2) {
+                return nums[0] < nums[1] ? nums[0] : nums[1];
+            }
+
+            var add = function(k){
+                if(k===nums.length-1){
+                    return 0;
+                }else{
+                    return k+1;
+                }
+            };
+            var sub = function(k){
+                if(k===0){
+                    return nums.length - 1;
+                }else{
+                    return k-1;
+                }
+            };
+
+            for(let i =0;i<nums.length;i++){
+                let j = i, k = i;
+                while(nums[sub(k)] === nums[i] && sub(k)!==j){
+                    k = sub(k);
+                }
+                while(nums[add(j)] === nums[i] && add(j)!==k){
+                    j = add(j);
+                }
+                if(add(j) === k){
+                    return nums[i];
+                }else if(nums[add(j)]>nums[i] && nums[sub(k)] > nums[i]){
+                    return nums[i];
+                }else{
+                    i = j;
+                }
+            }
+        };
+    </SCRIPT>
+</head>
+<body>
+
+</body>
+</html>

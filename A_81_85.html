@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        window.onload = function () {
+
+            //var nums = [1, 1, 1, 2, 3];
+            var nums = [
+                ["1","0","1","0","0"],
+                ["1","0","1","1","1"],
+                ["1","1","1","1","1"],
+                ["1","0","0","1","0"]
+            ];
+            //var nums = [1,1];
+
+            var result = maximalRectangle(nums);
+            console.log(result);
+        };
+        var search = function (nums, target) {
+
+            if (nums[0] == target)
+                return true;
+            for (var i = 1; i < nums.length; i++) {
+                if (nums[i] == target)
+                    return true;
+                if (nums[i - 1] < target && nums[i] > target)
+                    return false;
+                else if (nums[i] < nums[i - 1] && (target > nums[i - 1] || target < nums[i])) {
+                    return false;
+                }
+            }
+            return false;
+        };
+
+        function ListNode(val) {
+            this.val = val;
+            this.next = null;
+        }
+
+        function printList(head) {
+            var node = head;
+            var arr = [];
+            while (node != null) {
+                arr.push(node.val);
+                node = node.next;
+            }
+            console.log(arr);
+        }
+
+        // var deleteDuplicates = function (head) {
+        //     if (!head)
+        //         return head;
+        //     var tempNode = new ListNode(0);
+        //     tempNode.next = head;
+        //     var current = tempNode;
+        //     while(current.next){
+        //         var findNode = current.next;
+        //         while(findNode.next && findNode.val == findNode.next.val){
+        //             findNode = findNode.next;
+        //         }
+        //         if(current.next == findNode){
+        //             current = current.next;
+        //         }else{
+        //             current.next = findNode.next;
+        //         }
+        //     }
+        //     return tempNode.next;
+        // };
+        var deleteDuplicates = function (head) {
+            if (!head)
+                return head;
+            var current = head;
+            while (current.next) {
+                if (current.next.val != current.val) {
+                    current = current.next;
+                } else {
+                    var findNode = current.next;
+                    while (findNode.next && findNode.val == findNode.next.val) {
+                        findNode = findNode.next;
+                    }
+                    current.next = findNode.next;
+                }
+            }
+            return head;
+        };
+        var largestRectangleArea = function (heights) {
+            var stack = [];
+            heights.push(0);
+            var i = 0, maxSize = 0;
+            while (i < heights.length) {
+                if (stack.length == 0 || heights[stack[stack.length - 1]] < heights[i]) {
+                    stack.push(i);
+                    i++;
+                } else {
+                    var j = stack.pop();
+                    var newSize = heights[j] * (stack.length ? i - 1 - stack[stack.length - 1] : i);
+                    maxSize = maxSize >= newSize ? maxSize : newSize;
+                }
+            }
+            return maxSize;
+        };
+        var maximalRectangle = function (matrix) {
+            var maxSize = 0;
+            var heightsList = new Array();
+            for (var i = 0; i < matrix.length; i++) {
+                heightsList[i] = new Array();
+                for (var j = 0; j < matrix[0].length; j++) {
+                    if (i == 0) {
+                        heightsList[i][j] = matrix[i][j] == "1" ? 1 : 0;
+                    } else {
+                        heightsList[i][j] = matrix[i][j] == "1" ? heightsList[i - 1][j] + 1 : 0;
+                    }
+                }
+                var newSize = largestRectangleArea(heightsList[i]);
+                maxSize = maxSize >= newSize ? maxSize : newSize;
+            }
+            return maxSize;
+        };
+    </script>
+</head>
+<body>
+
+</body>
+</html>

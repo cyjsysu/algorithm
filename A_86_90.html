@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        window.onload = function () {
+            var nums = [1, 2, 2];
+
+            var res = subsetsWithDup(nums);
+            console.log(res);
+        };
+
+        function createLink(nums) {
+            var head = null, tail = null;
+            for (var n in nums) {
+                var node = new ListNode(nums[n]);
+                if (!head) {
+                    head = node;
+
+                } else {
+                    tail.next = node;
+                }
+                tail = node;
+            }
+            return head;
+        }
+
+        function ListNode(val) {
+            this.val = val;
+            this.next = null;
+        }
+
+        function printList(head) {
+            var node = head;
+            var arr = [];
+            while (node != null) {
+                arr.push(node.val);
+                node = node.next;
+            }
+            console.log(arr);
+        }
+
+        var partition = function (head, x) {
+            if (!head)
+                return head;
+            var tempNode = new ListNode(0);
+            tempNode.next = head;
+            var largerNode = tempNode;
+            while (largerNode.next && largerNode.next.val < x) {
+                largerNode = largerNode.next;
+            }
+            if (!largerNode.next)
+                return head;
+            var currentNode = largerNode;
+            while (currentNode.next) {
+                if (currentNode.next.val < x) {
+                    //console.log(["#", tempNode.val, largerNode.val, currentNode.val, currentNode.next.val]);
+                    var switchNode = currentNode.next;
+                    currentNode.next = switchNode.next;
+                    switchNode.next = largerNode.next;
+                    largerNode.next = switchNode;
+                    largerNode = switchNode;
+                    //printList(tempNode);
+                    // console.log(tempNode.val);
+                } else {
+                    currentNode = currentNode.next;
+                }
+            }
+            return tempNode.next;
+        };
+
+        var merge = function (nums1, m, nums2, n) {
+
+            var target = m + n - 1;
+            var i = m - 1, j = n - 1;
+            while (j >= 0) {
+                if (i >= 0 && nums2[j] < nums1[i]) {
+                    nums1[target--] = nums1[i--];
+                } else {
+                    nums1[target--] = nums2[j--];
+                }
+
+            }
+        };
+
+        var grayCode = function (n) {
+            n = Math.pow(2, n);
+            var nums = [0, 1];
+            if (n <= 2)
+                return nums.slice(0, n);
+
+            var needLen = n - 2;
+            var curLen = 2, curPow = 1;
+            while (needLen) {
+                var add = Math.pow(2, curPow++);
+                for (var i = 0; i < curLen; i++) {
+                    nums.push(nums[curLen - 1 - i] + add);
+
+                    if (!--needLen)
+                        break;
+                }
+                curLen *= 2;
+            }
+            //console.log(nums);
+            return nums;
+        };
+
+        var subsetsWithDup = function (nums) {
+            var numList = [];
+            var countList = [];
+            for (var i in nums) {
+                if (numList.indexOf(nums[i]) == -1) {
+                    numList.push(nums[i]);
+                    countList.push(1);
+                } else {
+                    countList[numList.indexOf(nums[i])]++;
+                }
+            }
+            var currentSeq = [[]];
+            // console.log(numList);
+            // console.log(countList);
+            // console.log(currentSeq);
+            return createSeq(numList, countList, 0, currentSeq);
+            // return currentSeq;
+        };
+
+        function createSeq(numList, countList, i, currentSeq) {
+            //console.log(["#", currentSeq]);
+            var newRes = [];
+            for (var k = 0; k <= countList[i]; k++) {
+                var newSeq = new Array(k).fill(numList[i]);
+                //console.log(["$", newSeq]);
+                for (var j = 0; j < currentSeq.length; j++) {
+                    //console.log(currentSeq[j]);
+                    newRes.push(currentSeq[j].concat(newSeq));
+                }
+            }
+            //currentSeq = newRes;
+            //console.log(["*", currentSeq]);
+            if (i + 1 < numList.length)
+                return createSeq(numList, countList, i + 1, newRes);
+            return newRes;
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

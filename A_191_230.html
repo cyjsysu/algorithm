@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        //199. 二叉树的右视图
+        var rightSideView = function (root) {
+            if (!root) {
+                return [];
+            }
+            let res = [];
+            let queue = [];
+            queue.push(root);
+            while (queue.length) {
+                let len = queue.length;
+                res.push(queue[0].val);
+                for (let i = 0; i < len; i++) {
+                    let curNode = queue.shift();
+
+                    if (curNode.right) {
+                        queue.push(curNode.right);
+                    }
+                    if (curNode.left) {
+                        queue.push(curNode.left);
+                    }
+                }
+            }
+            return res;
+        };
+
+        // 200. 岛屿数量
+        var numIslands = function (grid) {
+            let res = 0;
+
+            for (let i = 0; i < grid.length; i++) {
+                for (let j = 0; j < grid[i].length; j++) {
+                    if (grid[i][j] === '1') {
+                        res++;
+                        findLand(grid, i, j);
+                    }
+                }
+            }
+            return res;
+        };
+
+        function findLand(grid, i, j) {
+            if (i < 0 || i >= grid.length || j < 0 || j >= grid[0].length || grid[i][j] !== '1') {
+                return;
+            }
+            grid[i][j] = '2';
+            findLand(grid, i + 1, j);
+            findLand(grid, i - 1, j);
+            findLand(grid, i, j - 1);
+            findLand(grid, i, j + 1);
+
+        }
+
+        //202. 快乐数
+        var isHappy = function (n) {
+            let fast = n, slow = n;
+            do {
+                slow = count(slow);
+                fast = count(fast);
+                fast = count(fast);
+            } while (fast !== slow);
+
+            return fast === 1;
+        };
+
+        function count(n) {
+            let res = 0;
+            while (n) {
+                let mid = n % 10;
+                res += mid * mid;
+                n = Math.floor(n / 10);
+            }
+            return res;
+        }
+
+        //203. 移除链表元素
+        var removeElements = function (head, val) {
+            // if(!head)
+            //     return head;
+
+            let tmpNode = new ListNode(0);
+            tmpNode.next = head;
+            let curNode = tmpNode;
+            while (curNode.next) {
+                if (curNode.next.val === val) {
+                    curNode.next = curNode.next.next;
+                } else {
+                    curNode = curNode.next;
+                }
+            }
+            return tmpNode.next;
+        };
+
+        //204. 计数质数
+        var countPrimes = function (n) {
+            if (n < 2) {
+                return 0;
+            }
+            let res = 0;
+            let record = new Array(n).fill(true);
+            record[0] = record[1] = false;
+            for (let i = 2; i < n; i++) {
+                if (record[i] === true) {
+                    res++;
+                }
+                for (let j = 2; j <= i && i * j < n; j++) {
+                    record[i * j] = false;
+                }
+            }
+            return res;
+        };
+
+        //207. 课程表
+        var canFinish = function (numCourses, prerequisites) {
+            let inDegree = new Array(numCourses).fill(0);
+            let adjacency = [];
+            let queue = [];
+            for (let i = 0; i < numCourses; ++i) {
+                adjacency.push([]);
+            }
+            for (let i = 0; i < prerequisites.length; ++i) {
+                let from = prerequisites[i][1], to = prerequisites[i][0];
+                inDegree[to]++;
+                adjacency[from].push(to);
+            }
+            for (let i = 0; i < numCourses; ++i) {
+                if (inDegree[i] === 0) {
+                    queue.push(i);
+                }
+            }
+            while (queue.length) {
+                let from = queue.shift();
+                numCourses--;
+                for (let to of adjacency[from]) {
+                    inDegree[to]--;
+                    if (!inDegree[to]) {
+                        queue.push(to);
+                    }
+                }
+            }
+            return !numCourses;
+        };
+
+        // 209. 长度最小的子数组
+        var minSubArrayLen = function (s, nums) {
+            if (!nums.length) {
+                return 0;
+            }
+            let i = 0, j = -1, sum = 0, len = 0;
+            while (j < nums.length) {
+                if (sum < s) {
+                    sum += nums[++j];
+
+                } else {
+                    sum -= nums[i++];
+                }
+
+                if (sum >= s && (!len || j - i + 1 < len)) {
+                    len = j - i + 1;
+                }
+            }
+            return len;
+        };
+
+        var findOrder = function (numCourses, prerequisites) {
+            let inDegree = new Array(numCourses).fill(0);
+            let adjacency = [];
+            let queue = [], res = [];
+            for (let i = 0; i < numCourses; ++i) {
+                adjacency.push([]);
+            }
+            for (let i = 0; i < prerequisites.length; ++i) {
+                let from = prerequisites[i][1], to = prerequisites[i][0];
+                inDegree[to]++;
+                adjacency[from].push(to);
+            }
+            for (let i = 0; i < numCourses; ++i) {
+                if (inDegree[i] === 0) {
+                    queue.push(i);
+                }
+            }
+            while (queue.length) {
+                let from = queue.shift();
+                numCourses--;
+                res.push(from);
+                for (let to of adjacency[from]) {
+                    inDegree[to]--;
+                    if (!inDegree[to]) {
+                        queue.push(to);
+                    }
+                }
+            }
+            if (numCourses) {
+                return [];
+            } else {
+                return res;
+            }
+        };
+
+        // 198. 打家劫舍
+        var rob1 = function (nums) {
+            let pre = 0, cur = 0;
+            for (let k of nums) {
+                [pre, cur] = [cur, Math.max(pre + k, cur)]
+            }
+            return cur;
+        };
+
+        // 212. 单词搜索 II
+        var findWords = function (board, words) {
+
+        };
+
+
+        //213. 打家劫舍 II
+        var rob = function (nums) {
+            if (nums.length === 1) {
+                return nums[0];
+            }
+            let pre1 = 0, pre2 = 0, cur1 = 0, cur2 = 0;
+            for (let k of nums.slice(0, nums.length - 1)) {
+                [pre1, cur1] = [cur1, Math.max(pre1 + k, cur1)]
+            }
+            //console.log(nums.slice(1, nums.length));
+            for (let k of nums.slice(1, nums.length)) {
+                [pre2, cur2] = [cur2, Math.max(pre2 + k, cur2)]
+            }
+            //console.log(cur1, cur2);
+            return Math.max(cur1, cur2);
+        };
+
+        // 214. 最短回文串
+        var shortestPalindrome = function (s) {
+            if (s.length <= 1) {
+                return s;
+            }
+            let end = s.length - 1;
+            let i = 0, j = end;
+            let addSub = '';
+            while (i < j) {
+                if (s[i] !== s[j]) {
+                    i = 0;
+                    addSub += s[end--];
+                    j = end;
+                } else {
+                    ++i;
+                    --j;
+                }
+            }
+            return addSub + s;
+        };
+        console.log(shortestPalindrome("abcd"));
+
+        // 215. 数组中的第K个最大元素
+        // var findKthLargest = function(nums, k) {
+        //     return nums.sort((a,b)=>{
+        //         return b - a;
+        //     })[k-1];
+        //
+        // };
+
+        function findKthLargest(nums, k) {
+            buildMaxHeap(nums);
+
+            let len = nums.length;
+            for (let i = len - 1; i >= len - k; --i) {
+                [nums[i], nums[0]] = [nums[0], nums[i]];
+                let parent = 0, left = 1, right = 2;
+                while ((left < i && nums[left] > nums[parent]) || (right < i && nums[right] > nums[parent])) {
+                    if (right >= i) {
+                        [nums[left], nums[parent]] = [nums[parent], nums[left]];
+                        break;
+                    } else if (nums[left] > nums[right]) {
+                        [nums[left], nums[parent]] = [nums[parent], nums[left]];
+                        parent = left;
+                    } else {
+                        [nums[right], nums[parent]] = [nums[parent], nums[right]];
+                        parent = right;
+                    }
+                    left = parent * 2 + 1;
+                    right = parent * 2 + 2;
+
+                }
+
+            }
+            return nums[len - k];
+        }
+
+        function buildMaxHeap(nums) {
+            for (let i = 0; i < nums.length; ++i) {
+                let child = i;
+                let parent = Math.floor((child - 1) / 2);
+                while (parent >= 0 && nums[parent] < nums[child]) {
+                    [nums[parent], nums[child]] = [nums[child], nums[parent]];
+                    child = parent;
+                    parent = Math.floor((child - 1) / 2);
+                }
+            }
+        }
+
+        //39. 组合总和
+        var combinationSum = function (candidates, target) {
+            candidates.sort((a, b) => {
+                return a - b;
+            });
+            //console.log(candidates);
+            let result = [], queue = [[0, target, []]];
+            while (queue.length) {
+                let [index, remain, cur] = queue.shift();
+                //console.log(index, remain, cur);
+                while (index < candidates.length) {
+                    if (remain < cur[cur.length - 1]) {
+                        break;
+                    }
+                    cur.push(candidates[index]);
+
+                    if (candidates[index] === remain) {
+                        result.push(cur.concat());
+                    }
+                    queue.push([index, remain - candidates[index], cur.concat()]);
+                    index++;
+                    cur.pop();
+                }
+            }
+            return result;
+        };
+
+        // 40. 组合总和 II
+        var combinationSum2 = function (candidates, target) {
+            //candidates = Array.from(new Set(candidates));
+
+            candidates.sort((a, b) => {
+                return a - b;
+            });
+            //console.log(candidates);
+            let result = [], queue = [[0, target, []]];
+
+            while (queue.length) {
+                //console.log('===============================');
+                let [index, remain, cur] = queue.shift();
+                let start = index;
+                //console.log(index, remain, cur);
+                while (index < candidates.length) {
+                    if (remain < cur[cur.length - 1]) {
+                        break;
+                    }
+                    if (index > start && candidates[index] === candidates[index - 1]) {
+                        ++index;
+                        continue;
+                    }
+                    cur.push(candidates[index]);
+
+                    if (candidates[index] === remain) {
+                        result.push(cur.concat());
+                    }
+                    //console.log(cur);
+                    queue.push([index + 1, remain - candidates[index], cur.concat()]);
+                    index++;
+                    cur.pop();
+                }
+            }
+            return result;
+        };
+
+        // let candidates = [10,1,2,7,6,1,5], target = 8;
+        // console.log(combinationSum2(candidates, target));
+
+
+        //216. 组合总和 III
+        var combinationSum3 = function (k, target) {
+            let candidates = [];
+            for (let i = 1; i <= 9; i++) {
+                candidates.push(i);
+            }
+            //console.log(candidates);
+            let result = [], queue = [[0, target, []]];
+            while (queue.length) {
+                let [index, remain, cur] = queue.shift();
+                //console.log(index, remain, cur);
+                while (index < candidates.length) {
+                    if (remain < cur[cur.length - 1]) {
+                        break;
+                    }
+                    cur.push(candidates[index]);
+                    let curLen = cur.length;
+                    if (curLen === 1 || cur[curLen - 1] > cur[curLen - 2]) {
+                        if (curLen === k && candidates[index] === remain) {
+                            result.push(cur.concat());
+                        }
+                        if (cur.length < k) {
+                            queue.push([index, remain - candidates[index], cur.concat()]);
+                        }
+                    }
+
+                    index++;
+                    cur.pop();
+                }
+            }
+            return result;
+
+        };
+
+        // console.log(combinationSum3(3, 9));
+
+        // 217. 存在重复元素
+        var containsDuplicate = function (nums) {
+            let len = nums.length;
+            if (len <= 1) {
+                return false;
+            }
+            // nums.sort();
+            //
+            // for(let i = 1;i<len;++i){
+            //     if(nums[i] === nums[i-1]){
+            //         return true;
+            //     }
+            // }
+            // return false;
+
+            let minNum = Number.MAX_SAFE_INTEGER, maxNum = Number.MIN_SAFE_INTEGER;
+            for (let i = 0; i < len; ++i) {
+                if (nums[i] > maxNum) {
+                    maxNum = nums[i];
+                }
+                if (nums[i] < minNum) {
+                    minNum = nums[i];
+                }
+            }
+            let record = new Array(maxNum - minNum + 1).fill(0);
+            for (let i = 0; i < len; ++i) {
+                let k = nums[i] - minNum;
+                if (record[k] === 0) {
+                    record[k] = 1;
+                } else {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        // 219. 存在重复元素 II
+        var containsNearbyDuplicate = function (nums, interval) {
+            let len = nums.length;
+            if (len <= 1) {
+                return false;
+            }
+
+            let record = new Map();
+            for (let i = 0; i < len; ++i) {
+                if(record.has(nums[i]) && record.get(nums[i]) + interval >= i){
+                    return true;
+                }else{
+                    record.set(nums[i], i);
+                }
+            }
+            return false;
+        };
+        console.log(containsNearbyDuplicate([2147483647, -2147483648, 2147483647, -2147483648], 2));
+    </script>
+</head>
+<body>
+
+</body>
+</html>

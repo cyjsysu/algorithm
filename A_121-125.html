@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        window.onload = function () {
+            var nums = "race a car";
+            var res = isPalindrome(nums);
+            console.log(res);
+        };
+
+        //121. 买卖股票的最佳时机
+        var maxProfit1 = function (prices) {
+            var minPrice = -1;
+            var maxProfit = 0;
+            for (var i in prices) {
+                if (minPrice === -1 || minPrice > prices[i]) {
+                    minPrice = prices[i];
+                } else if (prices[i] - minPrice > maxProfit) {
+                    maxProfit = prices[i] - minPrice;
+                }
+            }
+            return maxProfit;
+        };
+
+        //122. 买卖股票的最佳时机 II
+        var maxProfit2 = function (prices) {
+            var sum = 0;
+            for (var i = 1; i < prices.length; i++) {
+                if (prices[i] > prices[i - 1]) {
+                    sum += (prices[i] - prices[i - 1]);
+                }
+            }
+            return sum;
+        };
+
+        //123. 买卖股票的最佳时机 III
+        var maxProfit = function (prices) {
+            if (!prices.length) {
+                return 0;
+            }
+
+            var buy1 = -prices[0], sell1 = 0, buy2 = -prices[0], sell2 = 0;
+            for (var i = 1; i < prices.length; i++) {
+                buy1 = Math.max(buy1, -prices[i]);
+                sell1 = Math.max(sell1, prices[i] + buy1);
+                buy2 = Math.max(buy2, sell1 - prices[i]);
+                sell2 = Math.max(sell2, prices[i] + buy2);
+            }
+            return sell2;
+        };
+
+        //124. 二叉树中的最大路径和
+        var maxPathSum = function (root) {
+
+            var maxLen = [-1000000];
+            findMaxSum(root, maxLen);
+            return maxLen[0];
+        };
+
+        function findMaxSum(node, maxLen) {
+            if (!node)
+                return 0;
+            var leftLen = findMaxSum(node.left, maxLen);
+            var rightLen = findMaxSum(node.right, maxLen);
+            maxLen[0] = Math.max(maxLen[0], node.val + leftLen + rightLen);
+            return Math.max(0, Math.max(leftLen, rightLen) + node.val);
+        }
+
+        //125. 验证回文串
+        var isPalindrome = function (s) {
+            s = s.toLowerCase().replace(/[^0-9a-z]/ig, '');
+            console.log(s);
+            var k = parseInt((s.length - 1) / 2);
+            for (var i = 0; i <= k;i++){
+                if(s[i] !== s[s.length - 1 - i])
+                    return false;
+            }
+
+            return true;
+        };
+    </script>
+</head>
+<body>
+
+</body>
+</html>

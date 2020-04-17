@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        //171. Excel表列序号
+        var titleToNumber = function (s) {
+            let res = 0;
+            //console.log(s);
+            for (let i = 0; i < s.length; i++) {
+                res = res * 26 + (s[i].charCodeAt() - 64);
+                //console.log(s[i], res);
+            }
+            return res;
+        };
+
+        //172. 阶乘后的零
+        var trailingZeroes = function (n) {
+            let zero = 0;
+            while (n) {
+                n = parseInt(n / 5);
+                zero += n;
+                //console.log(n, zero);
+            }
+            return zero;
+        };
+
+
+        /**
+         * Definition for a binary tree node.
+         * function TreeNode(val) {
+         *     this.val = val;
+         *     this.left = this.right = null;
+         * }
+         */
+        /**
+         * @param {TreeNode} root
+         */
+        var BSTIterator = function (root) {
+            //this.root = root;
+
+            function* ergodic(node) {
+                if (!node) {
+                    return 0;
+                }
+                let stack = [];
+                let curNode = node;
+                while (true) {
+                    if (curNode.left) {
+                        stack.push(curNode);
+                        curNode = curNode.left;
+                    } else {
+                        console.log(curNode.val);
+                        yield curNode.val;
+                        if (curNode.right) {
+                            curNode = curNode.right;
+                        } else {
+                            if (stack.length) {
+                                curNode = stack.pop();
+                                console.log(curNode.val);
+                                yield curNode.val;
+                                while (!curNode.right && stack.length) {
+                                    curNode = stack.pop();
+                                    console.log(curNode.val);
+                                    yield curNode.val;
+                                }
+                            }
+
+                            if (!curNode.right) {
+                                return 0;
+                            } else {
+                                curNode = curNode.right;
+                            }
+                        }
+                    }
+                }
+            }
+
+            this.finder = ergodic(root);
+            this.val = 0;
+            this.state = true;
+            this.over = false;
+            this.getVal = function () {
+                let {value: v, done: s} = this.finder.next();
+                this.val = v;
+                this.state = s;
+                console.log(this.val, this.state);
+            };
+            this.getVal();
+        };
+
+        BSTIterator.prototype.next = function () {
+            if (!this.state) {
+                let res = this.val;
+                this.getVal();
+                return res;
+            } else {
+                return 0;
+            }
+        };
+
+        BSTIterator.prototype.hasNext = function () {
+            return !this.state;
+        };
+
+        //let aaa = new BSTIterator(1);
+        // 179. 最大数
+        function cmp1(n, m) {
+            console.log(parseInt(m + n), parseInt(n + m), parseInt(m + n) < parseInt(n + m));
+            return parseInt(m + n) - parseInt(n + m);
+        }
+
+        var largestNumber = function (nums) {
+            let arr = [];
+            for (let n of nums) {
+                arr.push(n + '');
+            }
+            arr = arr.sort(cmp1);
+            if (arr[0] === '0') {
+                return '0';
+            }
+            console.log(arr);
+            let res = '';
+            for (let n of arr) {
+                res += n;
+            }
+            return res;
+        };
+        let nums = [121, 12];
+        console.log(largestNumber(nums));
+        // console.log('a' - 'c');
+    </script>
+</head>
+<body>
+
+</body>
+</html>

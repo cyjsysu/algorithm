@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        window.onload = function () {
+            var nums = [10, 5, 15, 0, 8, 13, 20, 2, -5, 6, 9, 12, 14, 18, 25];
+            var root = createTree(nums);
+            console.log("Z", inorderTraversal(root));
+        };
+
+        function TreeNode(val) {
+            this.val = val;
+            this.left = this.right = null;
+        }
+
+        function createTree(nums) {
+            if (nums.length === 0)
+                return null;
+            var val = nums.shift();
+
+            var root = new TreeNode(val);
+            //console.log(root.val);
+            var nodeStack = [];
+            nodeStack.push(root);
+
+            //console.log("T", nodeStack.length);
+            while (nodeStack.length) {
+                var k = nodeStack.length;
+                //console.log("S");
+                for (var i = 0; i < k; i++) {
+                    //console.log("R");
+                    var curNode = nodeStack.shift();
+                    var leftNode = null, rightNode = null;
+                    if (nums.length) {
+                        val = nums.shift();
+                        if (val !== null) {
+                            leftNode = new TreeNode(val);
+                            curNode.left = leftNode;
+                            nodeStack.push(leftNode);
+                        }
+
+                    } else {
+                        //console.log("A", inorderTraversal(root));
+                        return root;
+                    }
+                    if (nums.length) {
+                        val = nums.shift();
+                        if (val !== null) {
+                            rightNode = new TreeNode(val);
+                            curNode.right = rightNode;
+                            nodeStack.push(rightNode);
+                        }
+                    } else {
+                        //console.log("B", inorderTraversal(root));
+                        return root;
+                    }
+
+                    //console.log("D", inorderTraversal(root));
+                }
+                //console.log("C", inorderTraversal(root));
+            }
+        }
+
+        var inorderTraversal = function (root) {
+            var res = [];
+            if (!root)
+                return res;
+            var midStack = [];
+            var curNode = root;
+            while (true) {
+                if (curNode.left) {
+                    midStack.push(curNode);
+                    curNode = curNode.left;
+                } else {
+                    res.push(curNode.val);
+                    if (curNode.right) {
+                        curNode = curNode.right;
+                    } else {
+                        if (midStack.length === 0)
+                            break;
+                        else {
+                            curNode = midStack.pop();
+                            res.push(curNode.val);
+                            while (!curNode.right && midStack.length) {
+                                curNode = midStack.pop();
+                                res.push(curNode.val);
+                            }
+                            if (!curNode.right)
+                                break;
+                            curNode = curNode.right;
+                        }
+                    }
+                }
+
+            }
+            return res;
+        };
+
+        var isSymmetric = function (root) {
+            if (!root)
+                return true;
+            return subTreeIsSymmetric(root.left, root.right);
+        };
+
+        function subTreeIsSymmetric(node1, node2) {
+            if (!node1 && !node2) {
+                return true;
+            } else if (node1 && node2) {
+                if (node1.val === node2.val) {
+                    return subTreeIsSymmetric(node1.left, node2.right) && subTreeIsSymmetric(node1.right, node2.left);
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+
+        var levelOrder = function (root) {
+            var res = [];
+            var nodeStack = [];
+            if (!root) {
+                return res;
+            }
+            nodeStack.push(root);
+            // = 1, newNum = 0;
+            while (nodeStack.length) {
+                var curNum = nodeStack.length;
+                var curRes = [];
+                for (var i = 0; i < curNum; i++) {
+                    var curNode = nodeStack.shift();
+                    curRes.push(curNode.val);
+                    if (curNode.left) {
+                        nodeStack.push(curNode.left);
+                        //newNum++;
+                    }
+                    if (curNode.right) {
+                        nodeStack.push(curNode.right);
+                        //newNum++;
+                    }
+                }
+                res.push(curRes);
+            }
+            return res;
+        };
+
+        var zigzagLevelOrder = function (root) {
+            var res = [];
+            if (!root) {
+                return res;
+            }
+            var nodeStack = [];
+            nodeStack.push(root);
+            var backward = false;
+            while (nodeStack.length) {
+                var curNum = nodeStack.length;
+                var curRes = [];
+                var curStack = [];
+                for (var i = 0; i < curNum; i++) {
+                    var curNode = nodeStack.shift();
+                    curRes.push(curNode.val);
+                    if (!backward) {
+                        if (curNode.left) {
+                            curStack.unshift(curNode.left);
+                        }
+                        if (curNode.right) {
+                            curStack.unshift(curNode.right);
+                        }
+                    } else {
+                        if (curNode.right) {
+                            curStack.unshift(curNode.right);
+                        }
+                        if (curNode.left) {
+                            curStack.unshift(curNode.left);
+                        }
+                    }
+
+                }
+                res.push(curRes);
+                nodeStack = nodeStack.concat(curStack);
+                backward = !backward;
+            }
+            return res;
+        };
+
+        var maxDepth = function (root) {
+            var maxLen = [0];
+            getDepth(root, 1, maxLen);
+            return maxLen[0];
+        };
+
+        function getDepth(node, depth, maxLen) {
+            if (!node)
+                return depth - 1;
+            if (!node.left && !node.right && depth > maxLen[0]) {
+                maxLen[0] = depth;
+            }
+            getDepth(node.left, depth + 1, maxLen);
+            getDepth(node.right, depth + 1, maxLen);
+
+        }
+
+        //105. 从前序与中序遍历序列构造二叉树
+        // var buildTree = function (preorder, inorder) {
+        //
+        //     if (preorder.length === 0)
+        //         return null;
+        //
+        //     var root = new TreeNode(preorder[0]);
+        //     var k = -1;
+        //     for (var i = 0; i < inorder.length; i++) {
+        //         if (inorder[i] === preorder[0]) {
+        //             k = i;
+        //             break;
+        //         }
+        //     }
+        //
+        //     root.left = buildTree(preorder.slice(1, 1 + k), inorder.slice(0, k));
+        //     root.right = buildTree(preorder.slice(1 + k), inorder.slice(1 + k));
+        //
+        //     return root;
+        // };
+
+        // 106. 从中序与后序遍历序列构造二叉树
+        var buildTree = function (inorder, postorder) {
+            if (postorder.length === 0)
+                return null;
+
+
+            var treeLen = postorder.length;
+            var root = new TreeNode(postorder[treeLen - 1]);
+            var k = -1;
+            for (var i = 0; i < inorder.length; i++) {
+                if (inorder[i] === postorder[treeLen - 1]) {
+                    k = i;
+                    break;
+                }
+            }
+
+            root.left = buildTree(inorder.slice(0, k), postorder.slice(0, k));
+            root.right = buildTree(inorder.slice(1 + k), postorder.slice(k, treeLen - 1));
+
+            return root;
+        };
+
+        //108. 将有序数组转换为二叉搜索树
+        var sortedArrayToBST = function (nums) {
+            if (nums.length === 0) {
+                return null;
+            } else if (nums.length === 1) {
+                return new TreeNode(nums[0]);
+            }
+
+            var mid = parseInt(nums.length / 2);
+            var root = new TreeNode(nums[mid]);
+            root.left = sortedArrayToBST(nums.slice(0, mid));
+            root.right = sortedArrayToBST(nums.slice(mid + 1));
+            return root;
+        };
+
+        //109. 有序链表转换二叉搜索树
+        var sortedListToBST = function (head) {
+            var nums = [];
+            var curNode = head;
+            while (curNode) {
+                nums.push(curNode.val);
+                curNode = curNode.next;
+            }
+            return sortedArrayToBST(nums);
+        };
+
+        //110. 平衡二叉树
+        var isBalanced = function (root) {
+            if(!root)
+                return true;
+
+            return compareDepth(root, 1)[0];
+
+        };
+
+        function compareDepth(node, depth) {
+            if(!node){
+                return [true, depth-1];
+            }
+            var res1 = compareDepth(node.left, depth+1);
+            var res2 = compareDepth(node.right, depth+1);
+
+            if(res1[0] && res2[0]){
+                var maxDepth, minDepth;
+                if(res1[1] >= res2[1]){
+                    if(res1[1] - res2[1] > 1)
+                        return [false, 0];
+                    else
+                        return [true, res1[1]];
+                }else{
+                    if(res2[1] - res1[1] > 1)
+                        return [false, 0];
+                    else
+                        return [true, res2[1]];
+                }
+            }else{
+                return [false, 0]
+            }
+        }
+    </script>
+</head>
+<body>
+
+</body>
+</html>

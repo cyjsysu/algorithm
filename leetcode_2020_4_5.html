@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script>
+    var minSubsequence = function(nums) {
+        if(!nums){
+            return nums;
+        }
+        nums.sort((a,b)=>{
+            return b-a;
+        });
+        let end = 0;
+        let cur_sum = 0;
+        let sum = nums.reduce((sum, val)=>{
+            return sum + val;
+        }, 0);
+        sum = sum / 2;
+
+        while(end < nums.length){
+            cur_sum += nums[end];
+            if(cur_sum > sum){
+                return nums.slice(0, end + 1);
+            }
+            ++end;
+        }
+    };
+    // let nums = [4,4,7,6,7];
+    // console.log(minSubsequence(nums));
+
+    var numSteps = function(s) {
+        let res = 0;
+        let leave = 0;
+        s = s.replace(/^0*/, '');
+        //console.log(s);
+        while(s.length> 10){
+            let n = parseInt(s.slice(s.length - 10, s.length), 2) + leave;
+            s = s.slice(0, s.length - 10);
+
+            [leave, res] = dealSub(n, res);
+            //console.log(s, res, leave);
+        }
+        let num = parseInt(s, 2) + leave;
+        //console.log(num);
+        while(num > 1){
+            if(num % 2){
+                num++;
+            }else{
+                num /= 2;
+            }
+            res++;
+        }
+        return res;
+    };
+    function dealSub(num, res){
+        //let num = parseInt(s, 2);
+        for(let i = 0;i< 10;++i){
+            if(num % 2){
+                num++;
+                res++;
+            }
+            num /= 2;
+
+            res++;
+        }
+
+        return [num, res];
+    }
+    let s = "0000000000001111011110000011100000110001011011110010111001010111110001";
+    //let s = "1";
+    //let s = "11101111110010";
+    //let s = "10111011010101100101";  // 29
+    console.log(numSteps(s));
+</script>
+</body>
+</html>

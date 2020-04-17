@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        window.onload = function () {
+            var S = "rabbbit", T = "rabbit";
+            var res = numDistinct(S, T);
+        };
+        //111. 二叉树的最小深度
+        var minDepth = function (root) {
+            if (!root) {
+                return 0;
+            }
+            var leftDepth = minDepth(root.left);
+            var rightDepth = minDepth(root.right);
+            if (leftDepth && rightDepth) {
+                return Math.min(leftDepth, rightDepth) + 1;
+            } else {
+                return Math.max(leftDepth, rightDepth) + 1;
+            }
+        };
+
+        //112. 路径总和
+        var hasPathSum = function (root, sum) {
+            if (!root)
+                return false;
+            return findPath(root, sum, 0);
+        };
+
+        function findPath(node, sum, curSum) {
+            curSum += node.val;
+            if (!node.left && !node.right) {
+                return sum === curSum;
+            }
+            var leftRes = false, rightRes = false;
+            if (node.left) {
+                leftRes = findPath(node.left, sum, curSum);
+            }
+            if (node.right) {
+                rightRes = findPath(node.right, sum, curSum);
+            }
+            return leftRes || rightRes;
+        }
+
+        //113. 路径总和 II
+        var pathSum = function (root, sum) {
+            if (!root)
+                return [];
+
+            var allPath = [];
+            findAllPath(root, sum, 0, allPath, []);
+
+            return allPath;
+        };
+
+        function findAllPath(node, sum, curSum, allPath, curPath) {
+            curSum += node.val;
+            curPath.push(node.val);
+            if (!node.left && !node.right) {
+                if (curSum === sum) {
+                    allPath.push(curPath.concat());
+                }
+            } else {
+                if (node.left) {
+                    findAllPath(node.left, sum, curSum, allPath, curPath);
+                }
+                if (node.right) {
+                    findAllPath(node.right, sum, curSum, allPath, curPath);
+                }
+            }
+            curPath.pop();
+        }
+
+        // 114. 二叉树展开为链表
+        var flatten = function (root) {
+            if (!root)
+                return;
+            // root一定非null
+            if (!root.left && !root.right) {
+                return;
+            } else if (!root.right && !root.left.left && !root.left.right) {
+                root.right = root.left;
+                root.left = null;
+            } else if (!root.left && !root.right.left && !root.right.right) {
+                return;
+            } else {
+                var leftNode = root.left, rightNode = root.right;
+                flatten(root.left);
+                flatten(root.right);
+                if (root.left) {
+                    var tempNode = root.left;
+                    while (tempNode.right) {
+                        tempNode = tempNode.right;
+                    }
+                    root.right = leftNode;
+                    tempNode.right = rightNode;
+                    root.left = null;
+                }
+
+            }
+
+
+        };
+
+        //115. 不同的子序列
+        var numDistinct = function (s, t) {
+            var res = new Array(t.length + 1);
+            res[0] = new Array(s.length + 1).fill(1);
+            for (var i = 1; i < t.length + 1; i++) {
+                res[i] = new Array(s.length + 1).fill(0);
+            }
+            for (i = 1; i < t.length + 1; i++) {
+                for (var j = 1; j < s.length + 1; j++) {
+
+                    res[i][j] = res[i][j - 1] + (t[i - 1] === s[j - 1] ? res[i - 1][j - 1] : 0);
+                    //console.log(i-1, j-1, t[i-1]===s[j-1], res[i][j]);
+                }
+            }
+            //console.log(res);
+            return res[t.length][s.length];
+        };
+
+    </script>
+</head>
+<body>
+
+</body>
+</html>

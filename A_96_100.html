@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        window.onload = function () {
+            var s1 = "aabcc", s2 = "dbbca", s3 = "aadbbcbcac";
+            var res = isInterleave(s1, s2, s3);
+            console.log(res);
+            // var a = test(5, 8);
+            // var b = test(8, 5);
+            // console.log(a);
+            // console.log(b);
+        };
+        var numTrees = function (n) {
+            var record = new Array(n + 1).fill(0);
+            return countTree(n, record);
+            ///console.log(record);
+        };
+
+        function countTree(n, record) {
+            if (n === 0 || n === 1)
+                return 1;
+            else if (n === 2)
+                return 2;
+            else if (record[n])
+                return record[n];
+
+            for (var k = 1; k <= n; k++) {
+                var leftN = k - 1;
+                var rightN = n - k;
+                //var left, right;
+
+                var left = record[leftN] ? record[leftN] : countTree(leftN, record);
+                var right = record[rightN] ? record[rightN] : countTree(rightN, record);
+
+                record[n] += (left * right);
+            }
+            return record[n];
+        }
+
+        var isInterleave = function (s1, s2, s3) {
+            var record = new Array(s1.length + 1);
+            for (var i = 0; i <= s1.length; i++) {
+                record[i] = new Array(s2.length + 1).fill(false);
+            }
+            record[0][0] = true;
+
+            for (var k = 0; k < s3.length; k++) {
+                //console.log("++++++++++++++++++");
+                var notFound = true;
+                var startI = k + 1 > s2.length ? k + 1 - s2.length : 0;
+                var endI = k + 1 > s1.length ? s1.length : k + 1;
+
+                for (var i = startI; i <= endI; i++) {
+                    var j = k + 1 - i;
+                    //console.log(i, j);
+                    if ((i - 1 >= 0 && record[i - 1][j] && s1[i - 1] === s3[k]) ||
+                        (j - 1 >= 0 && record[i][j - 1] && s2[j - 1] === s3[k])) {
+                        record[i][j] = true;
+                        notFound = false;
+                    } else {
+                        record[i][j] = false;
+                    }
+                }
+                //console.log(record);
+                if (notFound)
+                    return false;
+            }
+
+            return record[s1.length][s2.length];
+        };
+
+        var isValidBST = function (root) {
+
+            return checkSubTree(root, -1000000, 1000000);
+        };
+
+        function checkSubTree(root, minN, maxN) {
+            if (!root)
+                return true;
+            if (root.val <= minN || root.val >= maxN)
+                return false;
+
+            return checkSubTree(root.left, minN, root.val) && checkSubTree(root.right, root.val, maxN);
+            //return res;
+        }
+
+
+        var recoverTree = function (root) {
+            if (!root)
+                return;
+            //[5,3,9,-2147483648,2]
+            var maxNode = [new TreeNode(-2147483650)], minNode = [new TreeNode(2147483650)];
+            var flag = [true];
+
+            recoverTreeNode(root, minNode, maxNode, flag);
+
+            var tempVal = minNode[0].val;
+            minNode[0].val = maxNode[0].val;
+            maxNode[0].val = tempVal;
+                //console.log("N", minNode[0].val, maxNode[0].val);
+
+        };
+        function recoverTreeNode(node, minNode, maxNode, flag) {
+            if(flag[0] === false)
+                return;
+
+            if(node.left){
+                recoverTreeNode(node.left, minNode, maxNode, flag);
+            }
+            if(node.val > maxNode[0].val){
+                if(node.val > minNode[0].val){
+                    flag[0] = false;
+                    return;
+                }else{
+                    maxNode[0] = node;
+                }
+            }else{
+                minNode[0] = node;
+            }
+
+            if(node.right){
+                recoverTreeNode(node.right, minNode, maxNode, flag);
+            }
+        }
+
+        var isSameTree = function(p, q) {
+            if(!p && !q){
+                return true;
+            }else if(!p || !q){
+                return false;
+            }else if(p.val !== q.val){
+                return false;
+            }
+
+            return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+
+        };
+    </script>
+</head>
+<body>
+
+</body>
+</html>
